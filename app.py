@@ -1,5 +1,6 @@
 from flask import Flask, render_template_string, request, redirect, url_for, session, jsonify
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import sqlite3, os
 
 app = Flask(__name__)
@@ -24,9 +25,11 @@ def init_db():
         con.commit()
 
 def save_visitor(name):
+    ist = ZoneInfo("Asia/Kolkata")
+    now_ist = datetime.now(ist).strftime("%d %b %Y  %I:%M %p IST")
     with sqlite3.connect(DB) as con:
         con.execute("INSERT INTO visitors (name, visited_at) VALUES (?, ?)",
-                    (name, datetime.now().strftime("%d %b %Y  %I:%M %p")))
+                    (name, now_ist))
         con.commit()
 
 def get_all_visitors():
